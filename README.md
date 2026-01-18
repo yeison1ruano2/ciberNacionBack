@@ -10,6 +10,8 @@ Java 21 (Amazon Corretto)
 
 Spring Boot
 
+PostgreSQL
+
 Maven
 
 JPA / Hibernate
