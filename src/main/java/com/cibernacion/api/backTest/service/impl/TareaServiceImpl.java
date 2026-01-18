@@ -3,16 +3,14 @@ package com.cibernacion.api.backTest.service.impl;
 import com.cibernacion.api.backTest.dto.TareaDto;
 import com.cibernacion.api.backTest.enums.EstadoTarea;
 import com.cibernacion.api.backTest.enums.Prioridad;
-import com.cibernacion.api.backTest.exception.BusinessException;
 import com.cibernacion.api.backTest.exception.ResourceNotFoundException;
 import com.cibernacion.api.backTest.mapper.TareaMapper;
+import com.cibernacion.api.backTest.model.Proyecto;
 import com.cibernacion.api.backTest.model.Tarea;
-import com.cibernacion.api.backTest.model.Usuario;
+import com.cibernacion.api.backTest.repository.ProyectoRepository;
 import com.cibernacion.api.backTest.repository.TareaRepository;
-import com.cibernacion.api.backTest.repository.UsuarioRepository;
 import com.cibernacion.api.backTest.service.TareaService;
 import com.cibernacion.api.backTest.specification.TareaSpecification;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,18 +28,20 @@ import java.time.LocalDate;
 public class TareaServiceImpl implements TareaService {
 
   private final TareaRepository tareaRepository;
-
+  private final ProyectoRepository proyectoRepository;
   private final TareaMapper tareaMapper;
 
 
   @Override
-  public TareaDto.Response crearTarea(TareaDto.Request dto) {
+  public TareaDto.Response crearTarea(TareaDto.Request dto,Long proyectoId) {
     Tarea tarea = new Tarea();
     tarea.setEstado(dto.getEstado());
     tarea.setDescripcion(dto.getDescripcion());
     tarea.setPrioridad(dto.getPrioridad());
     tarea.setTitulo(dto.getTitulo());
     tarea.setFechaLimite(dto.getFechaLimite());
+    Proyecto proyecto = proyectoRepository.findById(proyectoId).orElseThrow(()-> new ResourceNotFoundException("Proyecto no encontrado"));
+    tarea.setProyecto(proyecto);
     tarea.setActivo(true);
     return tareaMapper.toResponseDto(tareaRepository.save(tarea));
   }
@@ -65,8 +65,9 @@ public class TareaServiceImpl implements TareaService {
   }
 
   @Override
-  public Page<TareaDto.Response> filtrarTareas(Prioridad prioridad, EstadoTarea estado, LocalDate fechaLimite, Boolean activo, Pageable pageable) {
+  public Page<TareaDto.Response> filtrarTareas(Long proyectoId,Prioridad prioridad, EstadoTarea estado, LocalDate fechaLimite, Boolean activo, Pageable pageable) {
     Specification<Tarea> spec = Specification.where(TareaSpecification.isActivo(activo))
+            .and(TareaSpecification.hasProyectoId(proyectoId))
             .and(TareaSpecification.hasPrioridad(prioridad))
             .and(TareaSpecification.hasEstado(estado))
             .and(TareaSpecification.hasFechaLimite(fechaLimite));

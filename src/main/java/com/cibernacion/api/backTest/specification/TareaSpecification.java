@@ -9,6 +9,15 @@ import java.time.LocalDate;
 
 public class TareaSpecification {
 
+  public static Specification<Tarea> hasProyectoId(Long proyectoId){
+    return (root,query,cb)->{
+      if(proyectoId==null){
+        return cb.conjunction();
+      }
+      return cb.equal(root.get("proyecto").get("id"),proyectoId);
+    };
+  }
+
   public static Specification<Tarea> hasEstado(EstadoTarea estado){
     return (root,query,cb)->estado!=null ? cb.equal(root.get("estado"),estado):cb.conjunction();
   }

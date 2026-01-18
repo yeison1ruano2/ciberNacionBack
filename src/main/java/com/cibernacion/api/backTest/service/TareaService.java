@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface TareaService {
 
-  TareaDto.Response crearTarea(TareaDto.Request dto);
+  TareaDto.Response crearTarea(TareaDto.Request dto,Long poryectoId);
 
   TareaDto.Response obtenerPorId(Long id);
 
@@ -22,7 +22,7 @@ public interface TareaService {
 
   TareaDto.Response eliminarTarea(Long id);
 
-  Page<TareaDto.Response> filtrarTareas(Prioridad prioridad, EstadoTarea estado, LocalDate fechaLimite,Boolean activo,Pageable pageable);
+  Page<TareaDto.Response> filtrarTareas(Long proyectoId,Prioridad prioridad, EstadoTarea estado, LocalDate fechaLimite,Boolean activo,Pageable pageable);
 
   Page<TareaDto.Response> obtenerTareasDelMes(int anio, int mes, Pageable pageable);
 

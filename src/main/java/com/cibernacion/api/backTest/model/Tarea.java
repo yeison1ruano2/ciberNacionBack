@@ -45,6 +45,10 @@ public class Tarea {
   @Column(nullable = false)
   private LocalDate fechaActualizacion;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "proyecto_id")
+  private Proyecto proyecto;
+
 
   @PrePersist
   public void prePersist() {

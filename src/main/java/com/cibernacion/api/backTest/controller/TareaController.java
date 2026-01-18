@@ -22,9 +22,9 @@ public class TareaController {
 
   private final TareaService tareaService;
 
-  @PostMapping
-  public ResponseEntity<TareaDto.Response> crear(@Valid @RequestBody TareaDto.Request dto){
-    TareaDto.Response response = tareaService.crearTarea(dto);
+  @PostMapping("/{proyectoId}")
+  public ResponseEntity<TareaDto.Response> crear(@PathVariable Long proyectoId,@Valid @RequestBody TareaDto.Request dto){
+    TareaDto.Response response = tareaService.crearTarea(dto,proyectoId);
     return ResponseEntity.ok(response);
   }
 
@@ -52,13 +52,14 @@ public class TareaController {
     return ResponseEntity.ok(response);
   }
 
-  @GetMapping("/filtrar")
+  @GetMapping("/filtrar/{proyectoId}")
   public ResponseEntity<Page<TareaDto.Response>> filtrarTareas(@RequestParam(required = false) EstadoTarea estado,
                                                                @RequestParam(required = false) Prioridad prioridad,
                                                                @RequestParam(required = false) LocalDate fechaLimite,
                                                                @RequestParam(required = false) Boolean activo,
+                                                               @PathVariable Long proyectoId,
                                                                Pageable pageable){
-    Page<TareaDto.Response> response = tareaService.filtrarTareas(prioridad,estado,fechaLimite,activo,pageable);
+    Page<TareaDto.Response> response = tareaService.filtrarTareas(proyectoId,prioridad,estado,fechaLimite,activo,pageable);
     return ResponseEntity.ok(response);
   }
 
